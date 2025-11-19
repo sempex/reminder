@@ -1,6 +1,54 @@
 import Image from "next/image";
 import NextReminder from "./components/NextReminder";
 import StreakWidget from "./components/StreakWidget";
+import { StreakData } from "./components/StreakWidget";
+const activeStreakData: StreakData = {
+  totalDays: 23,
+  currentWeek: {
+    monday: {
+      date: new Date("2025-11-18"),
+      completed: true,
+      totalDoses: 3,
+      missedDoses: 0
+    },
+    tuesday: {
+      date: new Date("2025-11-19"),
+      completed: true,
+      totalDoses: 3,
+      missedDoses: 0
+    },
+    wednesday: {
+      date: new Date("2025-11-20"),
+      completed: true,
+      totalDoses: 3,
+      missedDoses: 1
+    },
+    thursday: {
+      date: new Date("2025-11-21"),
+      completed: false,
+      totalDoses: 3,
+      missedDoses: 0
+    },
+    friday: {
+      date: new Date("2025-11-22"),
+      completed: false,
+      totalDoses: 3,
+      missedDoses: 0
+    },
+    saturday: {
+      date: new Date("2025-11-23"),
+      completed: false,
+      totalDoses: 2,
+      missedDoses: 0
+    },
+    sunday: {
+      date: new Date("2025-11-24"),
+      completed: false,
+      totalDoses: 2,
+      missedDoses: 0
+    }
+  }
+};
 export default function Home() {
   return (
     <>
@@ -16,7 +64,7 @@ export default function Home() {
         </div>
         <Image src="/medicinehand.png" alt="medicinehand picture" className="transform scale-x-[-1] absolute top-2 right-0 z-20 pointer-events-none" width={150} height={150} />
       </div>
-      <StreakWidget />
+      <StreakWidget input={activeStreakData} />
     </>
   )
 } 
