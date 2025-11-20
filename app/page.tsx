@@ -2,6 +2,9 @@ import Image from "next/image";
 import NextReminder from "./components/NextReminder";
 import StreakWidget from "./components/StreakWidget";
 import { StreakData } from "./components/StreakWidget";
+import { getCurrentUser } from "@/app/auth/actions";
+import { redirect } from "next/navigation";
+
 const activeStreakData: StreakData = {
   totalDays: 23,
   currentWeek: {
@@ -49,12 +52,19 @@ const activeStreakData: StreakData = {
     }
   }
 };
-export default function Home() {
+
+export default async function Home() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/auth/login');
+  }
+
   return (
     <>
       <div className="bg-[#C89E85] rounded-3xl text-white m-2 p-4 relative overflow-hidden">
         <div className="flex flex-col items-center justify-center z-30 relative">
-          <p className="font-semibold text-2xl my-5">Hallo, Tim!</p>
+          <p className="font-semibold text-2xl my-5">Hallo, {user.name || 'User'}!</p>
         </div>
         <div className="relative mt-4">
 
