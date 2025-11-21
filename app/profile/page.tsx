@@ -4,8 +4,17 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosStats, IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineSettings, MdLogout } from "react-icons/md";
 import { FaFire } from "react-icons/fa";
+import { getCurrentUser } from "@/app/auth/actions";
+import { redirect } from "next/navigation";
+import LogoutButton from "./logout-button";
 
-export default function Profile() {
+export default async function Profile() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/auth/login');
+  }
+
   return (
     <div className="p-4 space-y-4">
       {/* Profile Header */}
@@ -20,8 +29,8 @@ export default function Profile() {
             </div>
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">Tim Reber</h1>
-            <p className="text-white/80 text-sm">tim@example.com</p>
+            <h1 className="text-2xl font-bold">{user.name || 'User'}</h1>
+            <p className="text-white/80 text-sm">{user.email}</p>
           </div>
           <Button variant="secondary" size="icon">
             <MdOutlineSettings className="text-xl" />
@@ -105,11 +114,7 @@ export default function Profile() {
             <span className="flex-1 text-left text-gray-800">Preferences</span>
             <span className="text-gray-400">›</span>
           </button>
-          <button className="w-full flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl transition-colors text-red-600">
-            <MdLogout className="text-xl" />
-            <span className="flex-1 text-left">Logout</span>
-            <span className="text-red-400">›</span>
-          </button>
+          <LogoutButton />
         </div>
       </div>
     </div>
