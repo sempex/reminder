@@ -1,0 +1,143 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User model - stores user authentication and profile information
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  medications               Medication[]
+  medicationLogs            MedicationLog[]
+  dailyStreaks              DailyStreak[]
+  notificationSubscriptions NotificationSubscription[]
+  preferences               UserPreferences?
+
+  @@index([email])
+}
+
+// Medication model - stores medication information
+model Medication {
+  id          String    @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  type        String    @default("supplement") // supplement, medication, vitamin, etc.
+  dosage      String? // e.g., "500mg", "1 pill"
+  frequency   Int       @default(1) // times per day
+  isActive    Boolean   @default(true)
+  startDate   DateTime  @default(now())
+  endDate     DateTime? // null for ongoing medications
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedules MedicationSchedule[]
+  logs      MedicationLog[]
+
+  @@index([userId])
+  @@index([userId, isActive])
+}
+
+// MedicationSchedule model - defines when a medication should be taken
+model MedicationSchedule {
+  id           String   @id @default(cuid())
+  medicationId String
+  timeOfDay    String // e.g., "08:00", "12:00", "20:00"
+  daysOfWeek   Int[] // [0-6] where 0=Sunday, 1=Monday, etc. Empty array means every day
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  medication Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  @@index([medicationId])
+}
+
+// MedicationLog model - tracks when medications were actually taken
+model MedicationLog {
+  id            String    @id @default(cuid())
+  userId        String
+  medicationId  String
+  scheduledTime DateTime // when it was supposed to be taken
+  takenAt       DateTime? // when it was actually taken (null if missed)
+  status        String    @default("pending") // pending, taken, missed, skipped
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  medication Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([medicationId])
+  @@index([userId, scheduledTime])
+  @@index([status])
+}
+
+// DailyStreak model - tracks daily completion status for streak calculation
+model DailyStreak {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime @db.Date // stores just the date without time
+  totalDoses     Int      @default(0) // total doses scheduled for this day
+  completedDoses Int      @default(0) // doses actually taken
+  missedDoses    Int      @default(0) // doses missed
+  isCompleted    Boolean  @default(false) // true if all doses taken
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([userId, date])
+}
+
+// NotificationSubscription model - stores push notification subscriptions
+model NotificationSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// UserPreferences model - stores user settings and preferences
+model UserPreferences {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  notificationsEnabled Boolean  @default(true)
+  reminderLeadTime     Int      @default(15) // minutes before scheduled time to send reminder
+  timezone             String   @default("UTC")
+  language             String   @default("en")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
