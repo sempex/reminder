@@ -4,7 +4,7 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosStats, IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineSettings, MdLogout } from "react-icons/md";
 import { FaFire } from "react-icons/fa";
-import { getCurrentUser } from "@/app/auth/actions";
+import { getCurrentUser } from "@/app/api/actions";
 import { redirect } from "next/navigation";
 import LogoutButton from "./logout-button";
 
@@ -12,7 +12,7 @@ export default async function Profile() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect('/auth/login');
+    redirect("/auth/login");
   }
 
   return (
@@ -20,7 +20,13 @@ export default async function Profile() {
       {/* Profile Header */}
       <div className="bg-gradient-to-br from-[#C89E85] to-[#B88E75] rounded-3xl p-6 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 opacity-10">
-          <Image src="/capsule.png" alt="pills background" width={200} height={200} className="object-cover" />
+          <Image
+            src="/capsule.png"
+            alt="pills background"
+            width={200}
+            height={200}
+            className="object-cover"
+          />
         </div>
         <div className="relative z-10 flex items-center gap-4">
           <div className="bg-white rounded-full p-1 shadow-lg">
@@ -29,7 +35,7 @@ export default async function Profile() {
             </div>
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{user.name || 'User'}</h1>
+            <h1 className="text-2xl font-bold">{user.name || "User"}</h1>
             <p className="text-white/80 text-sm">{user.email}</p>
           </div>
           <Button variant="secondary" size="icon">
@@ -106,7 +112,9 @@ export default async function Profile() {
         <div className="space-y-2">
           <button className="w-full flex items-center gap-3 p-3 hover:bg-gray-100 rounded-xl transition-colors">
             <IoMdNotificationsOutline className="text-xl text-gray-600" />
-            <span className="flex-1 text-left text-gray-800">Notifications</span>
+            <span className="flex-1 text-left text-gray-800">
+              Notifications
+            </span>
             <span className="text-gray-400">›</span>
           </button>
           <button className="w-full flex items-center gap-3 p-3 hover:bg-gray-100 rounded-xl transition-colors">
@@ -118,5 +126,5 @@ export default async function Profile() {
         </div>
       </div>
     </div>
-  )
+  );
 }

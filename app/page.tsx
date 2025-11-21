@@ -2,7 +2,7 @@ import Image from "next/image";
 import NextReminder from "./components/NextReminder";
 import StreakWidget from "./components/StreakWidget";
 import { StreakData } from "./components/StreakWidget";
-import { getCurrentUser } from "@/app/auth/actions";
+import { getCurrentUser } from "@/app/api/actions";
 import { redirect } from "next/navigation";
 
 const activeStreakData: StreakData = {

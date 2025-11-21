@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 import { MdLogout } from "react-icons/md";
-import { signOut } from "@/app/auth/actions";
+import { signOut } from "@/app/api/actions";
 
 export default function LogoutButton() {
   return (
@@ -13,5 +13,5 @@ export default function LogoutButton() {
       <span className="flex-1 text-left">Logout</span>
       <span className="text-red-400">›</span>
     </button>
-  )
+  );
 }

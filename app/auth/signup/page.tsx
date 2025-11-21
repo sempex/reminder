@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { signUp } from '../actions'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import GoogleAuthButton from '../google-auth-button'
+import { useState } from "react";
+import { signUp } from "../../api/actions";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import GoogleAuthButton from "../google-auth-button";
 
 export default function SignUpPage() {
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
-    const result = await signUp(formData)
+    const result = await signUp(formData);
 
     if (result?.error) {
-      setError(result.error)
-      setLoading(false)
+      setError(result.error);
+      setLoading(false);
     }
   }
 
@@ -26,7 +26,9 @@ export default function SignUpPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#C89E85] to-[#B88E75] p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            Create Account
+          </h1>
           <p className="text-gray-600">Sign up to get started</p>
         </div>
 
@@ -38,14 +40,19 @@ export default function SignUpPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with email
+              </span>
             </div>
           </div>
         </div>
 
         <form action={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Name
             </label>
             <input
@@ -59,7 +66,10 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -73,7 +83,10 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input
@@ -98,19 +111,22 @@ export default function SignUpPage() {
             disabled={loading}
             className="w-full bg-gradient-to-r from-[#C89E85] to-[#B88E75] hover:from-[#B88E75] hover:to-[#A87E65] text-white font-semibold py-3 rounded-xl transition-all"
           >
-            {loading ? 'Creating account...' : 'Sign Up'}
+            {loading ? "Creating account..." : "Sign Up"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600 text-sm">
-            Already have an account?{' '}
-            <Link href="/auth/login" className="text-[#C89E85] hover:text-[#B88E75] font-semibold">
+            Already have an account?{" "}
+            <Link
+              href="/auth/login"
+              className="text-[#C89E85] hover:text-[#B88E75] font-semibold"
+            >
               Sign in
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }
