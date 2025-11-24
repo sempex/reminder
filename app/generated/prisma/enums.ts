@@ -9,7 +9,9 @@
 * 🟢 You can import this file directly.
 */
 
+export const MedicationType = {
+  supplement: 'supplement',
+  medication: 'medication'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type MedicationType = (typeof MedicationType)[keyof typeof MedicationType]

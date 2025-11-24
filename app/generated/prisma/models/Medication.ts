@@ -20,18 +20,8 @@ export type MedicationModel = runtime.Types.Result.DefaultSelection<Prisma.$Medi
 
 export type AggregateMedication = {
   _count: MedicationCountAggregateOutputType | null
-  _avg: MedicationAvgAggregateOutputType | null
-  _sum: MedicationSumAggregateOutputType | null
   _min: MedicationMinAggregateOutputType | null
   _max: MedicationMaxAggregateOutputType | null
-}
-
-export type MedicationAvgAggregateOutputType = {
-  frequency: number | null
-}
-
-export type MedicationSumAggregateOutputType = {
-  frequency: number | null
 }
 
 export type MedicationMinAggregateOutputType = {
@@ -39,9 +29,8 @@ export type MedicationMinAggregateOutputType = {
   userId: string | null
   name: string | null
   description: string | null
-  type: string | null
+  type: $Enums.MedicationType | null
   dosage: string | null
-  frequency: number | null
   isActive: boolean | null
   startDate: Date | null
   endDate: Date | null
@@ -54,9 +43,8 @@ export type MedicationMaxAggregateOutputType = {
   userId: string | null
   name: string | null
   description: string | null
-  type: string | null
+  type: $Enums.MedicationType | null
   dosage: string | null
-  frequency: number | null
   isActive: boolean | null
   startDate: Date | null
   endDate: Date | null
@@ -81,14 +69,6 @@ export type MedicationCountAggregateOutputType = {
 }
 
 
-export type MedicationAvgAggregateInputType = {
-  frequency?: true
-}
-
-export type MedicationSumAggregateInputType = {
-  frequency?: true
-}
-
 export type MedicationMinAggregateInputType = {
   id?: true
   userId?: true
@@ -96,7 +76,6 @@ export type MedicationMinAggregateInputType = {
   description?: true
   type?: true
   dosage?: true
-  frequency?: true
   isActive?: true
   startDate?: true
   endDate?: true
@@ -111,7 +90,6 @@ export type MedicationMaxAggregateInputType = {
   description?: true
   type?: true
   dosage?: true
-  frequency?: true
   isActive?: true
   startDate?: true
   endDate?: true
@@ -173,18 +151,6 @@ export type MedicationAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: MedicationAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: MedicationSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: MedicationMinAggregateInputType
@@ -215,8 +181,6 @@ export type MedicationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: MedicationCountAggregateInputType | true
-  _avg?: MedicationAvgAggregateInputType
-  _sum?: MedicationSumAggregateInputType
   _min?: MedicationMinAggregateInputType
   _max?: MedicationMaxAggregateInputType
 }
@@ -226,17 +190,15 @@ export type MedicationGroupByOutputType = {
   userId: string
   name: string
   description: string | null
-  type: string
+  type: $Enums.MedicationType
   dosage: string | null
-  frequency: number
+  frequency: runtime.JsonValue | null
   isActive: boolean
   startDate: Date
   endDate: Date | null
   createdAt: Date
   updatedAt: Date
   _count: MedicationCountAggregateOutputType | null
-  _avg: MedicationAvgAggregateOutputType | null
-  _sum: MedicationSumAggregateOutputType | null
   _min: MedicationMinAggregateOutputType | null
   _max: MedicationMaxAggregateOutputType | null
 }
@@ -264,9 +226,9 @@ export type MedicationWhereInput = {
   userId?: Prisma.StringFilter<"Medication"> | string
   name?: Prisma.StringFilter<"Medication"> | string
   description?: Prisma.StringNullableFilter<"Medication"> | string | null
-  type?: Prisma.StringFilter<"Medication"> | string
+  type?: Prisma.EnumMedicationTypeFilter<"Medication"> | $Enums.MedicationType
   dosage?: Prisma.StringNullableFilter<"Medication"> | string | null
-  frequency?: Prisma.IntFilter<"Medication"> | number
+  frequency?: Prisma.JsonNullableFilter<"Medication">
   isActive?: Prisma.BoolFilter<"Medication"> | boolean
   startDate?: Prisma.DateTimeFilter<"Medication"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Medication"> | Date | string | null
@@ -284,7 +246,7 @@ export type MedicationOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   dosage?: Prisma.SortOrderInput | Prisma.SortOrder
-  frequency?: Prisma.SortOrder
+  frequency?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -303,9 +265,9 @@ export type MedicationWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Medication"> | string
   name?: Prisma.StringFilter<"Medication"> | string
   description?: Prisma.StringNullableFilter<"Medication"> | string | null
-  type?: Prisma.StringFilter<"Medication"> | string
+  type?: Prisma.EnumMedicationTypeFilter<"Medication"> | $Enums.MedicationType
   dosage?: Prisma.StringNullableFilter<"Medication"> | string | null
-  frequency?: Prisma.IntFilter<"Medication"> | number
+  frequency?: Prisma.JsonNullableFilter<"Medication">
   isActive?: Prisma.BoolFilter<"Medication"> | boolean
   startDate?: Prisma.DateTimeFilter<"Medication"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Medication"> | Date | string | null
@@ -323,17 +285,15 @@ export type MedicationOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   dosage?: Prisma.SortOrderInput | Prisma.SortOrder
-  frequency?: Prisma.SortOrder
+  frequency?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MedicationCountOrderByAggregateInput
-  _avg?: Prisma.MedicationAvgOrderByAggregateInput
   _max?: Prisma.MedicationMaxOrderByAggregateInput
   _min?: Prisma.MedicationMinOrderByAggregateInput
-  _sum?: Prisma.MedicationSumOrderByAggregateInput
 }
 
 export type MedicationScalarWhereWithAggregatesInput = {
@@ -344,9 +304,9 @@ export type MedicationScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Medication"> | string
   name?: Prisma.StringWithAggregatesFilter<"Medication"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Medication"> | string | null
-  type?: Prisma.StringWithAggregatesFilter<"Medication"> | string
+  type?: Prisma.EnumMedicationTypeWithAggregatesFilter<"Medication"> | $Enums.MedicationType
   dosage?: Prisma.StringNullableWithAggregatesFilter<"Medication"> | string | null
-  frequency?: Prisma.IntWithAggregatesFilter<"Medication"> | number
+  frequency?: Prisma.JsonNullableWithAggregatesFilter<"Medication">
   isActive?: Prisma.BoolWithAggregatesFilter<"Medication"> | boolean
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Medication"> | Date | string
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Medication"> | Date | string | null
@@ -358,9 +318,9 @@ export type MedicationCreateInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -376,9 +336,9 @@ export type MedicationUncheckedCreateInput = {
   userId: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -392,9 +352,9 @@ export type MedicationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -410,9 +370,9 @@ export type MedicationUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -427,9 +387,9 @@ export type MedicationCreateManyInput = {
   userId: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -441,9 +401,9 @@ export type MedicationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -456,9 +416,9 @@ export type MedicationUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -491,10 +451,6 @@ export type MedicationCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type MedicationAvgOrderByAggregateInput = {
-  frequency?: Prisma.SortOrder
-}
-
 export type MedicationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -502,7 +458,6 @@ export type MedicationMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
   dosage?: Prisma.SortOrder
-  frequency?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
@@ -517,16 +472,11 @@ export type MedicationMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
   dosage?: Prisma.SortOrder
-  frequency?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type MedicationSumOrderByAggregateInput = {
-  frequency?: Prisma.SortOrder
 }
 
 export type MedicationScalarRelationFilter = {
@@ -576,12 +526,8 @@ export type MedicationUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.MedicationScalarWhereInput | Prisma.MedicationScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type EnumMedicationTypeFieldUpdateOperationsInput = {
+  set?: $Enums.MedicationType
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -624,9 +570,9 @@ export type MedicationCreateWithoutUserInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -640,9 +586,9 @@ export type MedicationUncheckedCreateWithoutUserInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -686,9 +632,9 @@ export type MedicationScalarWhereInput = {
   userId?: Prisma.StringFilter<"Medication"> | string
   name?: Prisma.StringFilter<"Medication"> | string
   description?: Prisma.StringNullableFilter<"Medication"> | string | null
-  type?: Prisma.StringFilter<"Medication"> | string
+  type?: Prisma.EnumMedicationTypeFilter<"Medication"> | $Enums.MedicationType
   dosage?: Prisma.StringNullableFilter<"Medication"> | string | null
-  frequency?: Prisma.IntFilter<"Medication"> | number
+  frequency?: Prisma.JsonNullableFilter<"Medication">
   isActive?: Prisma.BoolFilter<"Medication"> | boolean
   startDate?: Prisma.DateTimeFilter<"Medication"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"Medication"> | Date | string | null
@@ -700,9 +646,9 @@ export type MedicationCreateWithoutSchedulesInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -717,9 +663,9 @@ export type MedicationUncheckedCreateWithoutSchedulesInput = {
   userId: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -748,9 +694,9 @@ export type MedicationUpdateWithoutSchedulesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -765,9 +711,9 @@ export type MedicationUncheckedUpdateWithoutSchedulesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -780,9 +726,9 @@ export type MedicationCreateWithoutLogsInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -797,9 +743,9 @@ export type MedicationUncheckedCreateWithoutLogsInput = {
   userId: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -828,9 +774,9 @@ export type MedicationUpdateWithoutLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -845,9 +791,9 @@ export type MedicationUncheckedUpdateWithoutLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -860,9 +806,9 @@ export type MedicationCreateManyUserInput = {
   id?: string
   name: string
   description?: string | null
-  type?: string
+  type: $Enums.MedicationType
   dosage?: string | null
-  frequency?: number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: boolean
   startDate?: Date | string
   endDate?: Date | string | null
@@ -874,9 +820,9 @@ export type MedicationUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -890,9 +836,9 @@ export type MedicationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -906,9 +852,9 @@ export type MedicationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  type?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumMedicationTypeFieldUpdateOperationsInput | $Enums.MedicationType
   dosage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.IntFieldUpdateOperationsInput | number
+  frequency?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1048,9 +994,9 @@ export type $MedicationPayload<ExtArgs extends runtime.Types.Extensions.Internal
     userId: string
     name: string
     description: string | null
-    type: string
+    type: $Enums.MedicationType
     dosage: string | null
-    frequency: number
+    frequency: runtime.JsonValue | null
     isActive: boolean
     startDate: Date
     endDate: Date | null
@@ -1486,9 +1432,9 @@ export interface MedicationFieldRefs {
   readonly userId: Prisma.FieldRef<"Medication", 'String'>
   readonly name: Prisma.FieldRef<"Medication", 'String'>
   readonly description: Prisma.FieldRef<"Medication", 'String'>
-  readonly type: Prisma.FieldRef<"Medication", 'String'>
+  readonly type: Prisma.FieldRef<"Medication", 'MedicationType'>
   readonly dosage: Prisma.FieldRef<"Medication", 'String'>
-  readonly frequency: Prisma.FieldRef<"Medication", 'Int'>
+  readonly frequency: Prisma.FieldRef<"Medication", 'Json'>
   readonly isActive: Prisma.FieldRef<"Medication", 'Boolean'>
   readonly startDate: Prisma.FieldRef<"Medication", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"Medication", 'DateTime'>

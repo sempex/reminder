@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CgProfile } from "react-icons/cg";
 import { IoIosStats, IoMdNotificationsOutline } from "react-icons/io";
-import { MdOutlineSettings, MdLogout } from "react-icons/md";
+import { MdOutlineSettings } from "react-icons/md";
 import { FaFire } from "react-icons/fa";
 import { getCurrentUser } from "@/app/api/actions";
 import { redirect } from "next/navigation";

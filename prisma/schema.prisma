@@ -27,16 +27,19 @@ model User {
 
   @@index([email])
 }
-
+enum MedicationType {
+  supplement
+  medication
+}
 // Medication model - stores medication information
 model Medication {
   id          String    @id @default(cuid())
   userId      String
   name        String
   description String?
-  type        String    @default("supplement") // supplement, medication, vitamin, etc.
+  type        MedicationType 
   dosage      String? // e.g., "500mg", "1 pill"
-  frequency   Int       @default(1) // times per day
+  frequency   Json?
   isActive    Boolean   @default(true)
   startDate   DateTime  @default(now())
   endDate     DateTime? // null for ongoing medications
