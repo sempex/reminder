@@ -31,3 +31,23 @@ export async function addMedicine(input: CreateMedicationInput) {
 
   return { success: true, medication };
 }
+
+export async function getPersonalMedications() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    throw new Error("Unauthorized");
+  }
+
+  const mediactions = await prisma.medication.findMany({
+    where: {
+      userId: user?.id,
+    },
+  });
+
+  return { success: true, mediactions };
+}

@@ -7,7 +7,7 @@ import { IoIosStats } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import Link from "next/link";
-import { addMedicine } from "../api/add-medicine";
+import { addMedicine } from "../api/medicine";
 import {
   Dialog,
   DialogDescription,
@@ -204,7 +204,11 @@ export default function Navbar() {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button
+                className="mt-3"
+                type="submit"
+                disabled={mutation.isPending}
+              >
                 {mutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

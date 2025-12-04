@@ -1,19 +1,73 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CgProfile } from "react-icons/cg";
 import { IoIosStats, IoMdNotificationsOutline } from "react-icons/io";
 import { MdOutlineSettings } from "react-icons/md";
 import { FaFire } from "react-icons/fa";
-import { getCurrentUser } from "@/app/api/actions";
-import { redirect } from "next/navigation";
 import LogoutButton from "./logout-button";
+import { useQuery } from "@tanstack/react-query";
+import { getPersonalMedications } from "../api/medicine";
+import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect } from "react";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { MedicationFrequency } from "../types";
 
-export default async function Profile() {
-  const user = await getCurrentUser();
+export default function Profile() {
+  const [user, setUser] = useState<User | null>();
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+        router.push("/auth/login");
+        return;
+      }
+
+      setUser(data.user);
+      setIsLoading(false);
+    };
+    loadUser();
+  }, [router]);
+
+  const { data: medicines, isLoading: medicinesLoading } = useQuery({
+    queryKey: ["medicines"],
+    queryFn: getPersonalMedications,
+    enabled: !!user,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-[#C89E85]" />
+      </div>
+    );
+  }
 
   if (!user) {
-    redirect("/auth/login");
+    return null;
   }
+
+  const getFrequencyDisplay = (frequency: MedicationFrequency | null) => {
+    if (!frequency) return "As needed";
+
+    if (frequency.type === "daily") {
+      return `${frequency.timesPerDay}x daily`;
+    }
+
+    if (frequency.type === "weekly") {
+      return `${frequency.daysOfWeek?.length || 0}x weekly`;
+    }
+
+    return "As needed";
+  };
 
   return (
     <div className="p-4 space-y-4">
@@ -35,8 +89,8 @@ export default async function Profile() {
             </div>
           </div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">{user.name || "User"}</h1>
-            <p className="text-white/80 text-sm">{user.email}</p>
+            <h1 className="text-2xl font-bold">{"User"}</h1>
+            <p className="text-white/80 text-sm">{user?.email}</p>
           </div>
           <Button variant="secondary" size="icon">
             <MdOutlineSettings className="text-xl" />
@@ -73,36 +127,43 @@ export default async function Profile() {
       <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl p-6 shadow-xl border border-gray-100">
         <h2 className="font-bold text-lg text-gray-800 mb-4">My Medications</h2>
         <div className="space-y-3">
-          <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
-            <div className="bg-gradient-to-br from-[#C89E85] to-[#B88E75] rounded-xl p-2">
-              <Image src="/capsule.png" alt="capsule" width={24} height={24} />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-gray-800">Magnesium</p>
-              <p className="text-xs text-gray-500">2x daily</p>
-            </div>
-            <div className="text-green-500 text-sm">Active</div>
-          </div>
-          <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
-            <div className="bg-gradient-to-br from-[#C89E85] to-[#B88E75] rounded-xl p-2">
-              <Image src="/capsule.png" alt="capsule" width={24} height={24} />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-gray-800">Vitamin D</p>
-              <p className="text-xs text-gray-500">1x daily</p>
-            </div>
-            <div className="text-green-500 text-sm">Active</div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-[#C89E85] to-[#B88E75] rounded-xl p-2">
-              <Image src="/capsule.png" alt="capsule" width={24} height={24} />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-gray-800">Omega-3</p>
-              <p className="text-xs text-gray-500">1x daily</p>
-            </div>
-            <div className="text-green-500 text-sm">Active</div>
-          </div>
+          {medicines?.mediactions.map((medication) => {
+            const frequency = medication.frequency as MedicationFrequency | null;
+            return (
+              <div
+                key={medication.id}
+                className="flex items-center gap-3 pb-3 border-b border-gray-200"
+              >
+                <div className="bg-gradient-to-br from-[#C89E85] to-[#B88E75] rounded-xl p-2">
+                  <Image
+                    src="/capsule.png"
+                    alt="capsule"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex gap-1">
+                    <p className="font-semibold text-gray-800">
+                      {medication.name}
+                    </p>
+                    <p className="text-gray-400">| {medication.type}</p>
+                  </div>
+                  <div className="flex gap-1">
+                    <p className="text-xs text-gray-500">{medication.dosage}</p>
+                    <p className="text-xs text-gray-500">
+                      | {getFrequencyDisplay(frequency)}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className={`${medication.isActive ? "text-green-500" : "text-red-500"} text-sm`}
+                >
+                  {medication.isActive ? "Active" : "Inactive"}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
