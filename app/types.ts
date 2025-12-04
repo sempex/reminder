@@ -1,3 +1,5 @@
+import { MedicationType } from "./generated/prisma/enums";
+
 export type MedicationFrequency =
   | {
       type: "daily";
@@ -21,7 +23,7 @@ export type MedicationFrequency =
 export type CreateMedicationInput = {
   name: string;
   description?: string;
-  type?: string;
+  type: MedicationType;
   dosage?: string;
   frequency?: MedicationFrequency;
 };

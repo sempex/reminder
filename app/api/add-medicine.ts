@@ -15,12 +15,12 @@ export async function addMedicine(input: CreateMedicationInput) {
     throw new Error("Unauthorized");
   }
 
-  await prisma.medication.create({
+  const medication = await prisma.medication.create({
     data: {
       userId: user.id,
       name: input.name,
       description: input.description,
-      type: "",
+      type: input.type,
       dosage: input.dosage,
       frequency: input.frequency,
       isActive: true,
@@ -28,4 +28,6 @@ export async function addMedicine(input: CreateMedicationInput) {
       endDate: null,
     },
   });
+
+  return { success: true, medication };
 }

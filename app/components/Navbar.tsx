@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { RiHome3Line } from "react-icons/ri";
 import { IoMdAdd } from "react-icons/io";
@@ -17,23 +19,25 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { use, useState } from "react";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MedicationFrequency } from "../types";
 import { TimePicker } from "./time-picker";
 import DayOfWeekSelector from "./dayofwekkSelector";
+import { MedicationType } from "../generated/prisma/enums";
+import { Loader2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+
 export default function Navbar() {
   const [medication, setMedication] = useState("");
   const [description, setDescription] = useState("");
   const [dosage, setDosage] = useState("");
-  const [type, setType] = useState("Select type");
+  const [type, setType] = useState<MedicationType>("supplement");
   const [frequencyNum, setFrequencyNum] = useState<number>(2);
   const [frequencyType, setFrequencyType] = useState<"daily" | "weekly">(
     "daily",
@@ -42,8 +46,29 @@ export default function Navbar() {
   const [frequencyTimes, setFrequencyTimes] = useState<Map<number, string>>(
     new Map(),
   );
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleSubmit = () => {
+  const mutation = useMutation({
+    mutationFn: addMedicine,
+    onSuccess: () => {
+      // Close dialog and reset form
+      setIsOpen(false);
+      setMedication("");
+      setDescription("");
+      setDosage("");
+      setType("supplement");
+      setFrequencyNum(2);
+      setFrequencyType("daily");
+      setFrequencyTimes(new Map());
+    },
+    onError: (error) => {
+      console.error("Error adding medicine:", error);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     let frequency: MedicationFrequency = {
       type: "as_needed",
     };
@@ -64,7 +89,7 @@ export default function Navbar() {
       };
     }
 
-    addMedicine({
+    mutation.mutate({
       name: medication,
       description: description,
       dosage: dosage,
@@ -85,14 +110,14 @@ export default function Navbar() {
           <FaRegCalendarAlt />
         </Button>
       </Link>
-      <Dialog>
-        <form onSubmit={() => handleSubmit()}>
-          <DialogTrigger asChild>
-            <Button className="mb-2">
-              <IoMdAdd />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button className="mb-2">
+            <IoMdAdd />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>Add medication</DialogTitle>
               <DialogDescription>
@@ -164,23 +189,34 @@ export default function Navbar() {
                   <DropdownMenuTrigger>{type}</DropdownMenuTrigger>
                 </Button>
                 <DropdownMenuContent>
-                  <DropdownMenuItem onSelect={() => setType("Supplement")}>
-                    Supplement
+                  <DropdownMenuItem onSelect={() => setType("supplement")}>
+                    supplement
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => setType("Medication")}>
-                    Medication
+                  <DropdownMenuItem onSelect={() => setType("medication")}>
+                    medication
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" disabled={mutation.isPending}>
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save"
+                )}
+              </Button>
             </DialogFooter>
-          </DialogContent>
-        </form>
+          </form>
+        </DialogContent>
       </Dialog>
       <Button variant="secondary">
         <IoIosStats />
